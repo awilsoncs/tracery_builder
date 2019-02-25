@@ -44,23 +44,36 @@ def load_module(file_path, external=False):
     if module.external:
         # if the module is external, we need to apply the namespace
         keys = module.productions.keys()
-        replacements = {}
         for key in list(keys):
             new_key = module.name if key == 'origin' else module.name + ':' + key
             module.productions[new_key] = module.productions[key]
             del module.productions[key]
-            replacements[key] = new_key
 
             # update entries
             for other_key, value in module.productions.items():
-                module.productions[other_key] = [
-                    x.replace('#{0}#'.format(key), '#{0}#'.format(new_key), 1000) for x in value
-                ]
+                module.productions[other_key] = [_replace_identifier(x, key, new_key) for x in value]
+    # always apply the namespace to internal variables
+    for variable in variables:
+        new_variable = module.name + '->' + variable
+        for key, value in module.productions.items():
+            module.productions[key] = [
+                _replace_identifier(
+                    _replace_identifier(x, variable, new_variable),
+                    variable,
+                    new_variable,
+                    token_pattern='[{0}:'
+                ) for x in value]
+
     else:
         # go ahead and add the module origin as a production
         if 'origin' in module.productions:
             module.productions[module.name] = module.productions['origin']
     return module
+
+
+def _replace_identifier(id_string, old_string, new_string, token_pattern='#{0}#'):
+    """Return an identifier with an updated string"""
+    return id_string.replace(token_pattern.format(old_string), token_pattern.format(new_string), 1000)
 
 
 def find_all_variables(js: dict) -> set:

@@ -67,7 +67,7 @@ def find_all_links(js: dict) -> set:
         for element in element_list:
             matches = re.findall(r'#([^#]+)#', element)
             for match in matches:
-                match = match.split(':')[0]
+                match = match.split(':')[0].split('.')[0]
                 if match not in rhs_symbols:
                     output.add(match)
     return output

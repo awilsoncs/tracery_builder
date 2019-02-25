@@ -1,10 +1,8 @@
 # Introduction
 
-Tracery Builder makes managing Tracery projects easier by allowing you to easily separate text productions into separate files. The first release is compatible with most Tracery files (no saving data yet!).
+Tracery Builder makes managing Tracery projects easier by allowing you to easily separate text productions into separate files. The first release is compatible with most Tracery files.
 
 Let's look at a few json files.
-   
-
   
 ```json
 star_system.json
@@ -43,7 +41,3 @@ star_system_out.json
   "events:celestial": ["cosmic shower", "moon explosion"]
 }
 ```
-
-# TODO
-
-* preserve data saves

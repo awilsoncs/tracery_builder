@@ -43,3 +43,8 @@ star_system_out.json
   "events:celestial": ["cosmic shower", "moon explosion"]
 }
 ```
+
+# TODO
+
+* preserve modifiers
+* preserve data saves

@@ -1,15 +1,3 @@
 {
-  "origin": [
-    "hello",
-    "goodbye.s",
-    "#origin.s#",
-    "#link_file#",
-    "#link_file# #link_file#",
-    "#lib_file:my_lib.s#",
-    "#lib_file:funky_stuff#",
-    "Occupation: [occupation:#butter#]"
-  ],
-  "butter": [
-    "butter dust"
-  ]
+  "origin": ["!dice(2d4)"]
 }

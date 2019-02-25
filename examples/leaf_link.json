@@ -1,8 +1,9 @@
 {
   "origin": [
-    "help me",
-    "#basic_test#",
-    "#ref_back#"
+    "test"
   ],
-  "ref_back": ["#basic_test#"]
+  "ref_back": ["#basic_test#"],
+  "test": ["[save:#c#] #save# #save# #save#"],
+  "c": ["1", "2", "3"],
+  "boom": ["[damage:!dice(6d6)]#damage#"]
 }

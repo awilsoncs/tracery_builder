@@ -1,24 +1,12 @@
 import argparse
-import collections
 import json
 import os
 import re
 
+import extensions
+from modules import Module
+
 VERSION = '1.0'
-
-
-Module = collections.namedtuple(
-    'Module',
-    [
-        'name',  # name of the module
-        'file_path',  # location of the module
-        'productions',  # tracery productions
-        'variables',  # variable identifiers ([thisObject:#myrule#])
-        'external',  # true if the module is not the primary module
-        'links',  # True if this module should append its name to its productions
-    ]
-)
-
 
 MODULE_CACHE = {}
 
@@ -40,6 +28,8 @@ def load_module(file_path, external=False):
         links=find_all_links(js, variables)
     )
     MODULE_CACHE[module_name] = module
+
+    resolve_extensions(js, module_name)
 
     if module.external:
         # if the module is external, we need to apply the namespace
@@ -69,6 +59,16 @@ def load_module(file_path, external=False):
         if 'origin' in module.productions:
             module.productions[module.name] = module.productions['origin']
     return module
+
+
+def resolve_extensions(js: dict, file: str):
+    """Load virtual modules into the module cache"""
+    for key, value in js.items():
+        for element in value:
+            for match in re.findall(extensions.DICE[0], element):
+                dice_module = extensions.DICE[1](match, file)
+                MODULE_CACHE[dice_module.name] = dice_module
+                js[key] = [x.replace(dice_module.file_path, '#'+dice_module.name+'#', 1000) for x in value]
 
 
 def _replace_identifier(id_string, old_string, new_string, token_pattern='#{0}#'):
@@ -135,7 +135,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Tracery Builder v{0}'.format(VERSION)
+        description='TTC: Tiny Tracery Compiler v{0}'.format(VERSION)
     )
     parser.add_argument('root_file', type=str, help='root file for the builder')
     parser.add_argument('out_file', type=str, help='file to create or update')

@@ -1,6 +1,6 @@
 # Introduction
 
-Tracery Builder makes managing Tracery projects easier by allowing you to easily separate text productions into separate files. The first release is compatible with most Tracery files.
+Tiny Tracery Compiler (TTC) is a JSON preprocessor that makes developing Tracery projects easier.
 
 Let's look at a few json files.
   
@@ -25,11 +25,11 @@ events.json
 }
 ```
 
-The first requires Tracery Builder, since it's missing some references. Note that #planet# and #event:celestial# aren't found in that file. Just run:
+The first requires TTC, since it's missing some references. Note that #planet# and #event:celestial# aren't found in that file. Just run:
 
-    > tbuild star_system.json star_system_out.json
+    > ttc star_system.json star_system_out.json
     
-and Tracery Builder will produce the following output file:
+and TTC will produce the following output file:
 
 ```json   
 star_system_out.json
@@ -39,5 +39,46 @@ star_system_out.json
   "star": ["a big star", "a little star"],
   "planet": ["a big planet", "a little planet"],
   "events:celestial": ["cosmic shower", "moon explosion"]
+}
+```
+
+# Extension Macros
+Some things are a real pain to write in bare JSON. TTC provides some convenience methods to make these tasks easier.
+
+## Dice Rolls
+The ! operator tells TTC that the following is a macro to expand. In this case, !dice allows the generator to properly simulate a dice roll (given in NdS notation).
+
+```json
+input:
+{
+    "origin": "!dice(2d4)"
+}
+
+output:
+{
+    "origin": [
+        "#basic_test:747354392896820237#"
+    ],
+    "basic_test": [
+        "#basic_test:747354392896820237#"
+    ],
+    "basic_test:747354392896820237": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "3",
+        "4",
+        "5",
+        "6",
+        "4",
+        "5",
+        "6",
+        "7",
+        "5",
+        "6",
+        "7",
+        "8"
+    ]
 }
 ```

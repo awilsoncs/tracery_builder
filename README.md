@@ -26,9 +26,7 @@ events.json
 }
 ```
 
-The first requires Tracery Builder, since it's missing some references. Note that #planet# and #event:celestial# aren't found in that file.
-
-We run
+The first requires Tracery Builder, since it's missing some references. Note that #planet# and #event:celestial# aren't found in that file. Just run:
 
     > tbuild star_system.json star_system_out.json
     

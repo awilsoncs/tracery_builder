@@ -1,0 +1,14 @@
+{
+  "origin": [
+    "hello",
+    "goodbye",
+    "#origin#",
+    "#link_file#",
+    "#link_file# #link_file#",
+    "#lib_file:my_lib#",
+    "#lib_file:funky_stuff#"
+  ],
+  "butter": [
+    "butter dust"
+  ]
+}

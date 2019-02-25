@@ -13,7 +13,8 @@ Module = collections.namedtuple(
         'name',  # name of the module
         'file_path',  # location of the module
         'productions',  # tracery productions
-        'external',
+        'variables',  # variable identifiers ([thisObject:#myrule#])
+        'external',  # true if the module is not the primary module
         'links',  # True if this module should append its name to its productions
     ]
 )
@@ -28,12 +29,15 @@ def load_module(file_path, external=False):
     with open(file_path) as f:
         js = json.load(f)
 
+    variables = find_all_variables(js)
+
     module = Module(
         name=module_name,
         file_path=file_path,
         productions=js,
         external=external,
-        links=find_all_links(js)
+        variables=find_all_variables(js),
+        links=find_all_links(js, variables)
     )
     MODULE_CACHE[module_name] = module
 
@@ -59,7 +63,17 @@ def load_module(file_path, external=False):
     return module
 
 
-def find_all_links(js: dict) -> set:
+def find_all_variables(js: dict) -> set:
+    output = set()
+    for element_list in js.values():
+        for element in element_list:
+            matches = re.findall(r'\[([^#:]+):', element)
+            for match in matches:
+                output.add(match)
+    return output
+
+
+def find_all_links(js: dict, variables: set) -> set:
     """Return the set of symbols that do not appear on the RHS of a production."""
     rhs_symbols = set(js.keys())
     output = set()
@@ -68,7 +82,7 @@ def find_all_links(js: dict) -> set:
             matches = re.findall(r'#([^#]+)#', element)
             for match in matches:
                 match = match.split(':')[0].split('.')[0]
-                if match not in rhs_symbols:
+                if match not in rhs_symbols and match not in variables:
                     output.add(match)
     return output
 

@@ -1,6 +1,7 @@
 # Introduction
 
-Tracery Builder makes managing Tracery projects easier by allowing you to easily separate text productions into separate files.
+Tracery Builder makes managing Tracery projects easier by allowing you to easily separate text productions into separate files. The first release is compatible with very primitive Tracery files (no modifiers or saving data yet!).
+
 Let's look at a few json files.
    
 
@@ -36,7 +37,7 @@ and Tracery Builder will produce the following output file:
 star_system_out.json
 
 {
-  "origin": ["#star#", "#planet#", "#events:celestial"],
+  "origin": ["#star#", "#planet#", "#events:celestial#"],
   "star": ["a big star", "a little star"],
   "planet": ["a big planet", "a little planet"],
   "events:celestial": ["cosmic shower", "moon explosion"]

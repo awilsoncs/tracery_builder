@@ -45,24 +45,48 @@ star_system_out.json
 # Extension Macros
 Some things are a real pain to write in bare JSON. TTC provides some convenience methods to make these tasks easier.
 
+## Production Weights
+While not a proper macro, TTC will perform the following transformation:
+```json
+input:
+{
+    "origin": [
+      [5, "highly weighted item"],
+      [2, "medium weighted item"],
+      "unweighted item"
+    ]
+}
+
+output:
+{
+  "origin": [
+    "highly weighted item",
+    "highly weighted item",
+    "highly weighted item",
+    "highly weighted item",
+    "highly weighted item",
+    "medium weighted item",
+    "medium weighted item",
+    "unweighted item"
+  ]
+}
+
+```
+
 ## Dice Rolls
 The ! operator tells TTC that the following is a macro to expand. In this case, !dice allows the generator to properly simulate a dice roll (given in NdS notation).
 
 ```json
 input:
 {
-    "origin": "!dice(2d4)"
+    "origin": "#dice(2d4)#"
 }
 
 output:
 {
-    "origin": [
-        "#basic_test:747354392896820237#"
-    ],
-    "basic_test": [
-        "#basic_test:747354392896820237#"
-    ],
-    "basic_test:747354392896820237": [
+    "origin": ["#basic_test:dice(2d4#"],
+    "basic_test": ["#basic_test:dice(2d4)#"],
+    "basic_test:dice(2d4)": [
         "2",
         "3",
         "4",

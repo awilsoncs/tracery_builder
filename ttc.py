@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+
 import argparse
 import json
 import os
 import re
 
-import extensions
+import macros
 from modules import Module
 
 VERSION = '1.0'
@@ -17,6 +19,8 @@ def load_module(file_path, external=False):
     with open(file_path) as f:
         js = json.load(f)
 
+    expand_weights(js)
+
     variables = find_all_variables(js)
 
     module = Module(
@@ -29,7 +33,7 @@ def load_module(file_path, external=False):
     )
     MODULE_CACHE[module_name] = module
 
-    resolve_extensions(js, module_name)
+    resolve_macros(js, module_name)
 
     if module.external:
         # if the module is external, we need to apply the namespace
@@ -61,17 +65,29 @@ def load_module(file_path, external=False):
     return module
 
 
-def resolve_extensions(js: dict, file: str):
+def expand_weights(js: Module):
+    """Expand weighted productions."""
+    for key, values in js.items():
+        output_list = []
+        for value in values:
+            if isinstance(value, list):
+                output_list += [value[1] for _ in range(value[0])]
+            else:
+                output_list.append(value)
+        js[key] = output_list
+
+
+def resolve_macros(js: dict, file: str):
     """Load virtual modules into the module cache"""
     for key, value in js.items():
         for element in value:
-            for match in re.findall(extensions.DICE[0], element):
-                dice_module = extensions.DICE[1](match, file)
+            for match in re.findall(macros.DICE[0], element):
+                dice_module = macros.DICE[1](match, file)
                 MODULE_CACHE[dice_module.name] = dice_module
                 js[key] = [x.replace(dice_module.file_path, '#'+dice_module.name+'#', 1000) for x in value]
 
 
-def _replace_identifier(id_string, old_string, new_string, token_pattern='#{0}#'):
+def _replace_identifier(id_string, old_string, new_string, token_pattern='#{0}'):
     """Return an identifier with an updated string"""
     return id_string.replace(token_pattern.format(old_string), token_pattern.format(new_string), 1000)
 

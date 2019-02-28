@@ -11,7 +11,7 @@ def dice(d, file):
     possibility_space = itertools.product([i+1 for i in range(s)], repeat=n)
     possibility_space = [sum(x) for x in possibility_space]
 
-    virtual_name = file + ":" + str(hash('dice({0})'.format(d)))
+    virtual_name = 'dice({0})'.format(d)
 
     return Module(
         name=virtual_name,
@@ -23,6 +23,6 @@ def dice(d, file):
         variables=set(),
         links=set()
     )
+DICE = (r'#dice\(([^)]+)\)#', dice)
 
 
-DICE = (r'!dice\(([^)]+)\)', dice)
